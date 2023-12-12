@@ -57,17 +57,32 @@ public class OntologyStoreServiceApplicationTests {
     }
 
     private void testOntologyDownloadService() {
-        ProductActionType actMedVaV4 = new ProductActionType();
-        actMedVaV4.setId("act_med_va_v4");
-        actMedVaV4.setDownload(true);
-
-        ProductActionType actVitalSingsV4 = new ProductActionType();
-        actVitalSingsV4.setId("act_vital_signs_v4");
-        actVitalSingsV4.setDownload(true);
+        String[] ontologies = {
+            "act_covid_v4",
+            "act_cpt4_px_v4",
+            "act_hcpcs_px_v4",
+            "act_icd10cm_dx_v4",
+            "act_icd10_icd9_dx_v4",
+            "act_icd10pcs_px_v4",
+            "act_icd9cm_dx_v4",
+            "act_icd9cm_px_v4",
+            "act_loinc_lab_prov_v4",
+            "act_loinc_lab_v4",
+            "act_med_alpha_v4",
+            "act_med_va_v4",
+            "act_network_ontology_v4",
+            "act_sdoh_v4",
+            "act_visit_details_v4",
+            "act_vital_signs_v4"
+        };
 
         List<ProductActionType> actions = new LinkedList<>();
-        actions.add(actMedVaV4);
-        actions.add(actVitalSingsV4);
+        for (String ontology : ontologies) {
+            ProductActionType ont = new ProductActionType();
+            ont.setId(ontology);
+            ont.setDownload(true);
+            actions.add(ont);
+        }
 
         List<ActionSummaryType> summaries = new LinkedList<>();
 
