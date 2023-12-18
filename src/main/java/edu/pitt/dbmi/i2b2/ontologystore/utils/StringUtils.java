@@ -21,6 +21,9 @@ package edu.pitt.dbmi.i2b2.ontologystore.utils;
 import edu.pitt.dbmi.i2b2.ontologystore.datavo.vdo.ActionSummaryType;
 import edu.pitt.dbmi.i2b2.ontologystore.datavo.vdo.ProductActionType;
 import edu.pitt.dbmi.i2b2.ontologystore.datavo.vdo.ProductType;
+import edu.pitt.dbmi.i2b2.ontologystore.model.PackageFile;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -31,6 +34,21 @@ import edu.pitt.dbmi.i2b2.ontologystore.datavo.vdo.ProductType;
 public final class StringUtils {
 
     private StringUtils() {
+    }
+
+    public static String toString(PackageFile packageFile) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("PackageFile{");
+        sb.append("\n   tableAccess=").append(Arrays.stream(packageFile.getTableAccess()).collect(Collectors.joining(",")));
+        sb.append(",\n    schemes=").append(packageFile.getSchemes());
+        sb.append(",\n    breakdownPath=").append(packageFile.getBreakdownPath());
+        sb.append(",\n    adapterMapping=").append(packageFile.getAdapterMapping());
+        sb.append(",\n    shrineIndex=").append(packageFile.getShrineIndex());
+        sb.append(",\n    conceptDimensions=").append(Arrays.stream(packageFile.getConceptDimensions()).collect(Collectors.joining(",")));
+        sb.append(",\n    domainOntologies=").append(Arrays.stream(packageFile.getDomainOntologies()).collect(Collectors.joining(",")));
+        sb.append("\n}");
+
+        return sb.toString();
     }
 
     public static String toString(ActionSummaryType type) {

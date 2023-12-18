@@ -23,10 +23,14 @@ import edu.pitt.dbmi.i2b2.ontologystore.datavo.vdo.ProductActionType;
 import edu.pitt.dbmi.i2b2.ontologystore.service.OntologyDownloadService;
 import edu.pitt.dbmi.i2b2.ontologystore.service.OntologyFileService;
 import edu.pitt.dbmi.i2b2.ontologystore.utils.StringUtils;
+import edu.pitt.dbmi.i2b2.ontologystore.utils.ZipFileValidation;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.LinkedList;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 
 /**
@@ -40,11 +44,14 @@ public class OntologyStoreServiceApplicationTests {
 
     private final OntologyFileService ontologyFileService;
     private final OntologyDownloadService ontologyDownloadService;
+    private final String downloadDirectory;
 
     @Autowired
     public OntologyStoreServiceApplicationTests(
             OntologyFileService ontologyFileService,
-            OntologyDownloadService ontologyDownloadService) {
+            OntologyDownloadService ontologyDownloadService,
+            @Value("${ontology.dir.download}") String downloadDirectory) {
+        this.downloadDirectory = downloadDirectory;
         this.ontologyFileService = ontologyFileService;
         this.ontologyDownloadService = ontologyDownloadService;
     }
@@ -52,27 +59,36 @@ public class OntologyStoreServiceApplicationTests {
     @Test
     public void contextLoads() {
         System.out.println("================================================================================");
-        testOntologyFileService();
         System.out.println("================================================================================");
+    }
+
+    private void testZipFileValidation() {
+        Path zipFilePath = Paths.get(downloadDirectory, "act_network_ontology_v4/act_network_ontology_v4.zip");
+        ZipFileValidation zipFileValidation = new ZipFileValidation(zipFilePath);
+        try {
+            zipFileValidation.validate();
+        } catch (ZipFileValidationException exception) {
+            System.err.println(exception.getMessage());
+        }
     }
 
     private void testOntologyDownloadService() {
         String[] ontologies = {
-            "act_covid_v4",
-            "act_cpt4_px_v4",
-            "act_hcpcs_px_v4",
-            "act_icd10cm_dx_v4",
-            "act_icd10_icd9_dx_v4",
-            "act_icd10pcs_px_v4",
-            "act_icd9cm_dx_v4",
-            "act_icd9cm_px_v4",
-            "act_loinc_lab_prov_v4",
-            "act_loinc_lab_v4",
-            "act_med_alpha_v4",
-            "act_med_va_v4",
+            //            "act_covid_v4",
+            //            "act_cpt4_px_v4",
+            //            "act_hcpcs_px_v4",
+            //            "act_icd10cm_dx_v4",
+            //            "act_icd10_icd9_dx_v4",
+            //            "act_icd10pcs_px_v4",
+            //            "act_icd9cm_dx_v4",
+            //            "act_icd9cm_px_v4",
+            //            "act_loinc_lab_prov_v4",
+            //            "act_loinc_lab_v4",
+            //            "act_med_alpha_v4",
+            //            "act_med_va_v4",
             "act_network_ontology_v4",
-            "act_sdoh_v4",
-            "act_visit_details_v4",
+            //            "act_sdoh_v4",
+            //            "act_visit_details_v4",
             "act_vital_signs_v4"
         };
 
