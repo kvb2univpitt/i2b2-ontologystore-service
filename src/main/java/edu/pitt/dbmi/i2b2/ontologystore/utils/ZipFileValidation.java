@@ -58,23 +58,25 @@ public class ZipFileValidation {
             throw new ZipFileValidationException(String.format("File does not exist: %s.", zipFileName));
         }
 
-        ZipFile zipFile = getZipFile();
+        try (ZipFile zipFile = new ZipFile(zipFilePath.toFile())) {
+            Map<String, ZipEntry> zipEntries = getZipEntries(zipFile);
 
-        Map<String, ZipEntry> zipEntries = getZipEntries(zipFile);
+            ZipEntry packageJsonZipEntry = zipEntries.get("package.json");
+            if (packageJsonZipEntry == null) {
+                throw new ZipFileValidationException(String.format("Missing package.json file: %s.", zipFileName));
+            }
 
-        ZipEntry packageJsonZipEntry = zipEntries.get("package.json");
-        if (packageJsonZipEntry == null) {
-            throw new ZipFileValidationException(String.format("Missing package.json file: %s.", zipFileName));
+            PackageFile packageFile = getPackageFile(packageJsonZipEntry, zipFile);
+
+            String rootFolder = new File(packageJsonZipEntry.getName()).getParent();
+            validateTableAccess(packageFile, rootFolder, zipEntries);
+            validateConceptDimension(packageFile, rootFolder, zipEntries);
+            validateDomainOntology(packageFile, rootFolder, zipEntries);
+            validateScheme(packageFile, rootFolder, zipEntries);
+            validateBreakdownPath(packageFile, rootFolder, zipEntries);
+        } catch (IOException exception) {
+            throw new ZipFileValidationException(String.format("Not a zip file: %s.", zipFileName));
         }
-
-        PackageFile packageFile = getPackageFile(packageJsonZipEntry, zipFile);
-
-        String rootFolder = new File(packageJsonZipEntry.getName()).getParent();
-        validateTableAccess(packageFile, rootFolder, zipEntries);
-        validateConceptDimension(packageFile, rootFolder, zipEntries);
-        validateDomainOntology(packageFile, rootFolder, zipEntries);
-        validateScheme(packageFile, rootFolder, zipEntries);
-        validateBreakdownPath(packageFile, rootFolder, zipEntries);
     }
 
     private void validateBreakdownPath(PackageFile packageFile, String rootFolder, Map<String, ZipEntry> zipEntries) throws ZipFileValidationException {
@@ -181,14 +183,6 @@ public class ZipFileValidation {
         }
 
         return zipEntries;
-    }
-
-    private ZipFile getZipFile() throws ZipFileValidationException {
-        try {
-            return new ZipFile(zipFilePath.toFile());
-        } catch (IOException exception) {
-            throw new ZipFileValidationException(String.format("Not a zip file: %s.", zipFileName));
-        }
     }
 
 }
