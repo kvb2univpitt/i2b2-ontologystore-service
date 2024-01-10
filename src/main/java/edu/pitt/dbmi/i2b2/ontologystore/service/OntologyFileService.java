@@ -62,12 +62,12 @@ public class OntologyFileService {
         this.fileSysService = fileSysService;
     }
 
-    public List<ProductType> getProductsForDisplay() {
+    public List<ProductType> getAvailableProducts() {
         List<ProductType> productDisplays = new LinkedList<>();
 
         try {
             getProducts().stream()
-                    .map(this::toProductDisplay)
+                    .map(this::toProductTypes)
                     .forEach(productDisplays::add);
         } catch (IOException exception) {
             LOGGER.error("", exception);
@@ -76,7 +76,7 @@ public class OntologyFileService {
         return productDisplays;
     }
 
-    private ProductType toProductDisplay(ProductItem productItem) {
+    private ProductType toProductTypes(ProductItem productItem) {
         ProductType productType = new ProductType();
         productType.setId(productItem.getId());
         productType.setTitle(productItem.getTitle());

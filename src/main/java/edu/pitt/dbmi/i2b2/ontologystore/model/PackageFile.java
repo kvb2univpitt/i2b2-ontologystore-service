@@ -18,8 +18,6 @@
  */
 package edu.pitt.dbmi.i2b2.ontologystore.model;
 
-import java.io.Serializable;
-
 /**
  * This class represent data from
  * <pre>package.json.</pre> file.
@@ -28,19 +26,17 @@ import java.io.Serializable;
  *
  * @author Kevin V. Bui (kvb2univpitt@gmail.com)
  */
-public class PackageFile implements Serializable {
-
-    private static final long serialVersionUID = 3726286122163459470L;
+public class PackageFile {
 
     private String[] tableAccess;
 
-    private String schemes;
+    private String[] schemes;
 
-    private String breakdownPath;
+    private String[] breakdownPath;
 
-    private String adapterMapping;
+    private String[] adapterMapping;
 
-    private String shrineIndex;
+    private String[] shrineIndex;
 
     private String[] conceptDimensions;
 
@@ -57,35 +53,35 @@ public class PackageFile implements Serializable {
         this.tableAccess = tableAccess;
     }
 
-    public String getSchemes() {
+    public String[] getSchemes() {
         return schemes;
     }
 
-    public void setSchemes(String schemes) {
+    public void setSchemes(String[] schemes) {
         this.schemes = schemes;
     }
 
-    public String getBreakdownPath() {
+    public String[] getBreakdownPath() {
         return breakdownPath;
     }
 
-    public void setBreakdownPath(String breakdownPath) {
+    public void setBreakdownPath(String[] breakdownPath) {
         this.breakdownPath = breakdownPath;
     }
 
-    public String getAdapterMapping() {
+    public String[] getAdapterMapping() {
         return adapterMapping;
     }
 
-    public void setAdapterMapping(String adapterMapping) {
+    public void setAdapterMapping(String[] adapterMapping) {
         this.adapterMapping = adapterMapping;
     }
 
-    public String getShrineIndex() {
+    public String[] getShrineIndex() {
         return shrineIndex;
     }
 
-    public void setShrineIndex(String shrineIndex) {
+    public void setShrineIndex(String[] shrineIndex) {
         this.shrineIndex = shrineIndex;
     }
 

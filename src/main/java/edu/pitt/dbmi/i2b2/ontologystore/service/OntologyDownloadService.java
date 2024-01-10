@@ -54,7 +54,7 @@ public class OntologyDownloadService extends AbstractOntologyService {
     }
 
     public synchronized void performDownload(List<ProductActionType> actions, List<ActionSummaryType> summaries) {
-        // get all download actions
+        // get actions that are only marked for download
         actions = actions.stream().filter(e -> e.isDownload()).collect(Collectors.toList());
 
         List<ProductItem> productsToDownload = getValidProductsToDownload(actions, summaries);
@@ -62,6 +62,13 @@ public class OntologyDownloadService extends AbstractOntologyService {
         verifyFileIntegrity(productsToDownload, summaries);
     }
 
+    /**
+     * Verify the integrity of the downloaded products by computing the SHA-256
+     * checksum and compare it with the ones given in the product list.
+     *
+     * @param productsToDownload
+     * @param summaries
+     */
     private void verifyFileIntegrity(List<ProductItem> productsToDownload, List<ActionSummaryType> summaries) {
         productsToDownload.forEach(productItem -> {
             String productFolder = productItem.getId();
@@ -80,8 +87,15 @@ public class OntologyDownloadService extends AbstractOntologyService {
         });
     }
 
+    /**
+     * Download production from the given product list.
+     *
+     * @param productsToDownload a list of products to download
+     * @param summaries a list to store download summaries
+     * @return a list products that are successfully downloaded
+     */
     private List<ProductItem> downloadFiles(List<ProductItem> productsToDownload, List<ActionSummaryType> summaries) {
-        List<ProductItem> validProductItems = new LinkedList<>();
+        List<ProductItem> downloadedProducts = new LinkedList<>();
 
         productsToDownload.forEach(productItem -> {
             String productFolder = productItem.getId();
@@ -90,7 +104,7 @@ public class OntologyDownloadService extends AbstractOntologyService {
                     && fileSysService.createDownloadStartedIndicatorFile(productFolder)) {
                 try {
                     fileSysService.downloadFile(productItem.getFile(), productDir);
-                    validProductItems.add(productItem);
+                    downloadedProducts.add(productItem);
                 } catch (Exception exception) {
                     LOGGER.error("", exception);
                     String errorMsg = "Unable to download from the given URL.";
@@ -102,9 +116,23 @@ public class OntologyDownloadService extends AbstractOntologyService {
             }
         });
 
-        return validProductItems;
+        return downloadedProducts;
     }
 
+    /**
+     * Get a list of product items based on the download-action list that meet
+     * the following conditions:
+     *
+     * <ul>
+     * <li>Products that have not been downloaded.</li>
+     * <li>Products that have not previous failed to download.</li>
+     * <li>Products that are currently been downloaded.</li>
+     * </ul>
+     *
+     * @param actions a list of download actions
+     * @param summaries a list to store download summaries
+     * @return a list of products to download
+     */
     private List<ProductItem> getValidProductsToDownload(List<ProductActionType> actions, List<ActionSummaryType> summaries) {
         List<ProductItem> validProductItems = new LinkedList<>();
 

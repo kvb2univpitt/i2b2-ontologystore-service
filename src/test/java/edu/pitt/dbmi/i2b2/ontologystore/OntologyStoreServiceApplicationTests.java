@@ -59,6 +59,9 @@ public class OntologyStoreServiceApplicationTests {
     @Test
     public void contextLoads() {
         System.out.println("================================================================================");
+//        testGetAvailableProducts();
+//        testOntologyDownloadService();
+//        testZipFileValidation();
         System.out.println("================================================================================");
     }
 
@@ -108,8 +111,8 @@ public class OntologyStoreServiceApplicationTests {
                 .forEach(System.out::println);
     }
 
-    private void testOntologyFileService() {
-        ontologyFileService.getProductsForDisplay().stream()
+    private void testGetAvailableProducts() {
+        ontologyFileService.getAvailableProducts().stream()
                 .map(StringUtils::toString)
                 .forEach(System.out::println);
     }

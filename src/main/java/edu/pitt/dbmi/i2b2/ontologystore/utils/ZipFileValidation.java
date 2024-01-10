@@ -79,64 +79,54 @@ public class ZipFileValidation {
         }
     }
 
+    private void checkZipEntryExist(String[] files, String rootFolder, Map<String, ZipEntry> zipEntries) throws ZipFileValidationException {
+        for (String file : files) {
+            String zipFile = Paths.get(rootFolder, file).toString();
+            if (!zipEntries.containsKey(zipFile)) {
+                throw new ZipFileValidationException(
+                        String.format("Missing file: File %s not found in %s.", zipFile, zipFileName));
+            }
+        }
+    }
+
     private void validateBreakdownPath(PackageFile packageFile, String rootFolder, Map<String, ZipEntry> zipEntries) throws ZipFileValidationException {
-        String file = packageFile.getBreakdownPath();
-        if (file == null) {
+        String[] breakdownPaths = packageFile.getBreakdownPath();
+        if (breakdownPaths == null || breakdownPaths.length == 0) {
             throw new ZipFileValidationException(
-                    String.format("Breakdown path file missing: %s.", zipFileName));
+                    String.format("Breakdown path files missing: %s.", zipFileName));
         }
 
-        String zipFile = Paths.get(rootFolder, file).toString();
-        if (!zipEntries.containsKey(zipFile)) {
-            throw new ZipFileValidationException(
-                    String.format("Missing file: File %s not found in %s.", zipFile, zipFileName));
-        }
+        checkZipEntryExist(breakdownPaths, rootFolder, zipEntries);
     }
 
     private void validateScheme(PackageFile packageFile, String rootFolder, Map<String, ZipEntry> zipEntries) throws ZipFileValidationException {
-        String file = packageFile.getSchemes();
-        if (file == null) {
+        String[] schemes = packageFile.getSchemes();
+        if (schemes == null || schemes.length == 0) {
             throw new ZipFileValidationException(
-                    String.format("Schemes file missing: %s.", zipFileName));
+                    String.format("Scheme files missing: %s.", zipFileName));
         }
 
-        String zipFile = Paths.get(rootFolder, file).toString();
-        if (!zipEntries.containsKey(zipFile)) {
-            throw new ZipFileValidationException(
-                    String.format("Missing file: File %s not found in %s.", zipFile, zipFileName));
-        }
+        checkZipEntryExist(schemes, rootFolder, zipEntries);
     }
 
     private void validateDomainOntology(PackageFile packageFile, String rootFolder, Map<String, ZipEntry> zipEntries) throws ZipFileValidationException {
-        String[] tableAccess = packageFile.getDomainOntologies();
-        if (tableAccess == null || tableAccess.length == 0) {
+        String[] ontologies = packageFile.getDomainOntologies();
+        if (ontologies == null || ontologies.length == 0) {
             throw new ZipFileValidationException(
                     String.format("Domain ontology files missing: %s.", zipFileName));
         }
 
-        for (String file : tableAccess) {
-            String zipFile = Paths.get(rootFolder, file).toString();
-            if (!zipEntries.containsKey(zipFile)) {
-                throw new ZipFileValidationException(
-                        String.format("Missing file: File %s not found in %s.", zipFile, zipFileName));
-            }
-        }
+        checkZipEntryExist(ontologies, rootFolder, zipEntries);
     }
 
     private void validateConceptDimension(PackageFile packageFile, String rootFolder, Map<String, ZipEntry> zipEntries) throws ZipFileValidationException {
-        String[] tableAccess = packageFile.getConceptDimensions();
-        if (tableAccess == null || tableAccess.length == 0) {
+        String[] conceptDimensions = packageFile.getConceptDimensions();
+        if (conceptDimensions == null || conceptDimensions.length == 0) {
             throw new ZipFileValidationException(
                     String.format("Concept dimension files missing: %s.", zipFileName));
         }
 
-        for (String file : tableAccess) {
-            String zipFile = Paths.get(rootFolder, file).toString();
-            if (!zipEntries.containsKey(zipFile)) {
-                throw new ZipFileValidationException(
-                        String.format("Missing file: File %s not found in %s.", zipFile, zipFileName));
-            }
-        }
+        checkZipEntryExist(conceptDimensions, rootFolder, zipEntries);
     }
 
     private void validateTableAccess(PackageFile packageFile, String rootFolder, Map<String, ZipEntry> zipEntries) throws ZipFileValidationException {
@@ -146,13 +136,7 @@ public class ZipFileValidation {
                     String.format("Table access files missing: %s.", zipFileName));
         }
 
-        for (String file : tableAccess) {
-            String zipFile = Paths.get(rootFolder, file).toString();
-            if (!zipEntries.containsKey(zipFile)) {
-                throw new ZipFileValidationException(
-                        String.format("Missing file: File %s not found in %s.", zipFile, zipFileName));
-            }
-        }
+        checkZipEntryExist(tableAccess, rootFolder, zipEntries);
     }
 
     private PackageFile getPackageFile(ZipEntry packageJsonZipEntry, ZipFile zipFile) throws ZipFileValidationException {
