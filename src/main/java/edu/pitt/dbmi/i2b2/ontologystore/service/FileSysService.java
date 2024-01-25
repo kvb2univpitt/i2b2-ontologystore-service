@@ -29,6 +29,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.nio.file.StandardOpenOption;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -320,7 +321,7 @@ public class FileSysService {
             return true;
         } else {
             try {
-                Files.writeString(file, message);
+                Files.write(file, message.getBytes(), StandardOpenOption.CREATE);
             } catch (IOException exception) {
                 LOGGER.error(String.format("Unable to write message to file: '%s'.", file.toString()), exception);
 
@@ -333,7 +334,7 @@ public class FileSysService {
 
     public String readFromFile(Path file, String defaultMessage) {
         try {
-            return Files.readString(file);
+            return new String(Files.readAllBytes(file));
         } catch (IOException exception) {
             LOGGER.error(String.format("Unable to read file: %s.", file.toString()), exception);
         }

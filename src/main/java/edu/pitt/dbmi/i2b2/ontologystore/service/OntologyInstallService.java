@@ -61,17 +61,12 @@ public class OntologyInstallService extends AbstractOntologyService {
     private final MetadataInstallService metadataInstallService;
     private final CrcInstallService crcInstallService;
 
-    private final DataSource ontologydemodsDataSource;
-    private final DataSource querytooldemodsDataSource;
-
     @Autowired
-    public OntologyInstallService(HiveDBAccess hiveDBAccess, MetadataInstallService metadataInstallService, CrcInstallService crcInstallService, DataSource ontologydemodsDataSource, DataSource querytooldemodsDataSource, FileSysService fileSysService, OntologyFileService ontologyFileService) {
-        super(fileSysService, ontologyFileService);
+    public OntologyInstallService(HiveDBAccess hiveDBAccess, MetadataInstallService metadataInstallService, CrcInstallService crcInstallService, FileSysService fileSysService, OntologyFileService ontologyFileService, DataSource ontologydemodsDataSource, DataSource querytooldemodsDataSource) {
+        super(fileSysService, ontologyFileService, ontologydemodsDataSource, querytooldemodsDataSource);
         this.hiveDBAccess = hiveDBAccess;
         this.metadataInstallService = metadataInstallService;
         this.crcInstallService = crcInstallService;
-        this.ontologydemodsDataSource = ontologydemodsDataSource;
-        this.querytooldemodsDataSource = querytooldemodsDataSource;
     }
 
     public synchronized void performInstallation(String project, List<ProductActionType> actions, List<ActionSummaryType> summaries) throws InstallationException {
@@ -102,7 +97,7 @@ public class OntologyInstallService extends AbstractOntologyService {
 
             productsToInstall.forEach(productItem -> {
                 try {
-                    install(productItem, project, ontJdbcTemplate, crcJdbcTemplate, summaries);
+                    install(productItem, ontJdbcTemplate, crcJdbcTemplate, summaries);
                 } catch (Exception exception) {
                     LOGGER.error("", exception);
                     summaries.add(createActionSummary(productItem.getTitle(), ACTION_TYPE, false, false, "Metadata Installation Failed."));
@@ -112,7 +107,7 @@ public class OntologyInstallService extends AbstractOntologyService {
         }
     }
 
-    private void install(ProductItem productItem, String project, JdbcTemplate ontJdbcTemplate, JdbcTemplate crcJdbcTemplate, List<ActionSummaryType> summaries) throws InstallationException {
+    private void install(ProductItem productItem, JdbcTemplate ontJdbcTemplate, JdbcTemplate crcJdbcTemplate, List<ActionSummaryType> summaries) throws InstallationException {
         File productFile = fileSysService.getProductFile(productItem).toFile();
         try (ZipFile zipFile = new ZipFile(productFile)) {
             Map<String, ZipEntry> zipEntries = ZipFileUtils.getZipFileEntries(zipFile);
@@ -194,18 +189,6 @@ public class OntologyInstallService extends AbstractOntologyService {
         });
 
         return validProductItems;
-    }
-
-    private DataSource getDataSource(String datasourceJNDIName) {
-
-        return datasourceJNDIName.endsWith("OntologyDemoDS") ? ontologydemodsDataSource : querytooldemodsDataSource;
-//        try {
-//            return (new JndiDataSourceLookup()).getDataSource(datasourceJNDIName);
-//        } catch (Exception exception) {
-//            String errMsg = String.format("Unable to get datasource for JNDI name '%s'.", datasourceJNDIName);
-//            LOGGER.error(errMsg, exception);
-//            return null;
-//        }
     }
 
 }

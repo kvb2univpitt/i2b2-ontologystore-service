@@ -36,6 +36,7 @@ import java.util.zip.ZipFile;
 import javax.sql.DataSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
@@ -55,6 +56,7 @@ public class CrcInstallService extends AbstractInstallService {
     private static final String QT_BREAKDOWN_PATH_TABLE = "qt_breakdown_path";
     protected static final String QT_BREAKDOWN_PATH_TABLE_PK = "name";
 
+    @Autowired
     public CrcInstallService(FileSysService fileSysService) {
         super(fileSysService);
     }

@@ -19,6 +19,7 @@
 package edu.pitt.dbmi.i2b2.ontologystore.service;
 
 import edu.pitt.dbmi.i2b2.ontologystore.datavo.vdo.ActionSummaryType;
+import javax.sql.DataSource;
 
 /**
  *
@@ -31,9 +32,14 @@ public abstract class AbstractOntologyService {
     protected final FileSysService fileSysService;
     protected final OntologyFileService ontologyFileService;
 
-    public AbstractOntologyService(FileSysService fileSysService, OntologyFileService ontologyFileService) {
+    private final DataSource ontologydemodsDataSource;
+    private final DataSource querytooldemodsDataSource;
+
+    public AbstractOntologyService(FileSysService fileSysService, OntologyFileService ontologyFileService, DataSource ontologydemodsDataSource, DataSource querytooldemodsDataSource) {
         this.fileSysService = fileSysService;
         this.ontologyFileService = ontologyFileService;
+        this.ontologydemodsDataSource = ontologydemodsDataSource;
+        this.querytooldemodsDataSource = querytooldemodsDataSource;
     }
 
     protected ActionSummaryType createActionSummary(String title, String actionType, boolean inProgress, boolean success, String detail) {
@@ -45,6 +51,11 @@ public abstract class AbstractOntologyService {
         summary.setDetail(detail);
 
         return summary;
+    }
+
+    protected DataSource getDataSource(String datasourceJNDIName) {
+
+        return datasourceJNDIName.endsWith("OntologyDemoDS") ? ontologydemodsDataSource : querytooldemodsDataSource;
     }
 
 }

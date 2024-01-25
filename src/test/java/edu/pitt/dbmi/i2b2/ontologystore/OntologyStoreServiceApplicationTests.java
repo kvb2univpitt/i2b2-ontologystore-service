@@ -20,6 +20,7 @@ package edu.pitt.dbmi.i2b2.ontologystore;
 
 import edu.pitt.dbmi.i2b2.ontologystore.datavo.vdo.ActionSummaryType;
 import edu.pitt.dbmi.i2b2.ontologystore.datavo.vdo.ProductActionType;
+import edu.pitt.dbmi.i2b2.ontologystore.service.OntologyDisableService;
 import edu.pitt.dbmi.i2b2.ontologystore.service.OntologyDownloadService;
 import edu.pitt.dbmi.i2b2.ontologystore.service.OntologyFileService;
 import edu.pitt.dbmi.i2b2.ontologystore.service.OntologyInstallService;
@@ -47,17 +48,20 @@ public class OntologyStoreServiceApplicationTests {
     private final OntologyFileService ontologyFileService;
     private final OntologyDownloadService ontologyDownloadService;
     private final OntologyInstallService ontologyInstallService;
+    private final OntologyDisableService ontologyDisableService;
 
     @Autowired
     public OntologyStoreServiceApplicationTests(
             @Value("${ontology.dir.download}") String downloadDirectory,
             OntologyFileService ontologyFileService,
             OntologyDownloadService ontologyDownloadService,
-            OntologyInstallService ontologyInstallService) {
+            OntologyInstallService ontologyInstallService,
+            OntologyDisableService ontologyDisableService) {
         this.downloadDirectory = downloadDirectory;
         this.ontologyFileService = ontologyFileService;
         this.ontologyDownloadService = ontologyDownloadService;
         this.ontologyInstallService = ontologyInstallService;
+        this.ontologyDisableService = ontologyDisableService;
     }
 
     @Test
@@ -67,7 +71,35 @@ public class OntologyStoreServiceApplicationTests {
 //        testOntologyDownloadService();
 //        testZipFileValidation();
 //        testOntologyInstallService();
+//        testOntologyDisableService();
         System.out.println("================================================================================");
+    }
+
+    private void testOntologyDisableService() {
+        String project = "Demo";
+        String[] ontologies = {
+            "act_network_ontology_v4",
+            "act_vital_signs_v4"
+        };
+
+        List<ProductActionType> actions = new LinkedList<>();
+        for (String ontology : ontologies) {
+            ProductActionType ont = new ProductActionType();
+            ont.setId(ontology);
+            ont.setDisable(true);
+            actions.add(ont);
+        }
+
+        List<ActionSummaryType> summaries = new LinkedList<>();
+        try {
+            ontologyDisableService.performDisableEnable(project, actions, summaries);
+        } catch (InstallationException exception) {
+            exception.printStackTrace(System.err);
+        }
+
+        summaries.stream()
+                .map(StringUtils::toString)
+                .forEach(System.out::println);
     }
 
     private void testOntologyInstallService() {
