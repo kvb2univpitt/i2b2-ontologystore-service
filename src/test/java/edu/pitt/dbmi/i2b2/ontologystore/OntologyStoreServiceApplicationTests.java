@@ -22,6 +22,7 @@ import edu.pitt.dbmi.i2b2.ontologystore.datavo.vdo.ActionSummaryType;
 import edu.pitt.dbmi.i2b2.ontologystore.datavo.vdo.ProductActionType;
 import edu.pitt.dbmi.i2b2.ontologystore.service.OntologyDownloadService;
 import edu.pitt.dbmi.i2b2.ontologystore.service.OntologyFileService;
+import edu.pitt.dbmi.i2b2.ontologystore.service.OntologyInstallService;
 import edu.pitt.dbmi.i2b2.ontologystore.utils.StringUtils;
 import edu.pitt.dbmi.i2b2.ontologystore.utils.ZipFileValidation;
 import java.nio.file.Path;
@@ -42,18 +43,21 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 public class OntologyStoreServiceApplicationTests {
 
+    private final String downloadDirectory;
     private final OntologyFileService ontologyFileService;
     private final OntologyDownloadService ontologyDownloadService;
-    private final String downloadDirectory;
+    private final OntologyInstallService ontologyInstallService;
 
     @Autowired
     public OntologyStoreServiceApplicationTests(
+            @Value("${ontology.dir.download}") String downloadDirectory,
             OntologyFileService ontologyFileService,
             OntologyDownloadService ontologyDownloadService,
-            @Value("${ontology.dir.download}") String downloadDirectory) {
+            OntologyInstallService ontologyInstallService) {
         this.downloadDirectory = downloadDirectory;
         this.ontologyFileService = ontologyFileService;
         this.ontologyDownloadService = ontologyDownloadService;
+        this.ontologyInstallService = ontologyInstallService;
     }
 
     @Test
@@ -62,7 +66,39 @@ public class OntologyStoreServiceApplicationTests {
 //        testGetAvailableProducts();
 //        testOntologyDownloadService();
 //        testZipFileValidation();
+//        testOntologyInstallService();
         System.out.println("================================================================================");
+    }
+
+    private void testOntologyInstallService() {
+        String project = "Demo";
+//        String[] ontologies = {
+//            "act_vital_signs_v4",
+//            "act_visit_details_v4",
+//            "act_vital_signs_v4"
+//        };
+        String[] ontologies = {
+            "act_vital_signs_v4"
+        };
+
+        List<ProductActionType> actions = new LinkedList<>();
+        for (String ontology : ontologies) {
+            ProductActionType ont = new ProductActionType();
+            ont.setId(ontology);
+            ont.setInstall(true);
+            actions.add(ont);
+        }
+
+        List<ActionSummaryType> summaries = new LinkedList<>();
+        try {
+            ontologyInstallService.performInstallation(project, actions, summaries);
+        } catch (InstallationException exception) {
+            exception.printStackTrace(System.err);
+        }
+
+        summaries.stream()
+                .map(StringUtils::toString)
+                .forEach(System.out::println);
     }
 
     private void testZipFileValidation() {

@@ -44,17 +44,13 @@ public class OntologyDownloadService extends AbstractOntologyService {
 
     private static final String ACTION_TYPE = "Download";
 
-    private final FileSysService fileSysService;
-    private final OntologyFileService ontologyFileService;
-
     @Autowired
     public OntologyDownloadService(FileSysService fileSysService, OntologyFileService ontologyFileService) {
-        this.fileSysService = fileSysService;
-        this.ontologyFileService = ontologyFileService;
+        super(fileSysService, ontologyFileService);
     }
 
     public synchronized void performDownload(List<ProductActionType> actions, List<ActionSummaryType> summaries) {
-        // get actions that are only marked for download
+        // get actions that are marked for download
         actions = actions.stream().filter(e -> e.isDownload()).collect(Collectors.toList());
 
         List<ProductItem> productsToDownload = getValidProductsToDownload(actions, summaries);
@@ -142,7 +138,7 @@ public class OntologyDownloadService extends AbstractOntologyService {
             if (products.containsKey(productFolder)) {
                 ProductItem productItem = products.get(productFolder);
                 if (fileSysService.hasDirectory(productFolder)) {
-                    if (fileSysService.hasFinshedDownload(productFolder)) {
+                    if (fileSysService.hasFinshedDownload(productFolder) && fileSysService.isProductFileExists(productItem)) {
                         summaries.add(createActionSummary(productItem.getTitle(), ACTION_TYPE, false, true, "Already downloaded."));
                     } else if (fileSysService.hasFailedDownload(productFolder)) {
                         summaries.add(createActionSummary(productItem.getTitle(), ACTION_TYPE, false, false, fileSysService.getFailedDownloadMessage(productFolder)));

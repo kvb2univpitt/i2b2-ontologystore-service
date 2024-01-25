@@ -89,15 +89,15 @@ public class OntologyFileService {
         terminologies.getTerminology().addAll(Arrays.asList(productItem.getTerminologies()));
         productType.setTerminologies(terminologies);
 
-        getStatus(productType);
+        getStatus(productType, productItem);
 
         return productType;
     }
 
-    private void getStatus(ProductType product) {
+    private void getStatus(ProductType product, ProductItem productItem) {
         String productFolder = product.getId();
         if (fileSysService.hasDirectory(productFolder)) {
-            if (fileSysService.hasFinshedDownload(productFolder)) {
+            if (fileSysService.hasFinshedDownload(productFolder) && fileSysService.isProductFileExists(productItem)) {
                 product.setDownloaded(true);
                 product.setIncludeNetworkPackage(fileSysService.hasNetworkFiles(productFolder));
 
