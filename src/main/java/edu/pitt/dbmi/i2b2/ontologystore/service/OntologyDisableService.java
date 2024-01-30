@@ -67,7 +67,7 @@ public class OntologyDisableService extends AbstractOntologyService {
 
     public synchronized void performDisableEnable(String project, List<ProductActionType> actions, List<ActionSummaryType> summaries) throws InstallationException {
         // get actions that are marked for disable/enable
-        actions = actions.stream().filter(ProductActionType::isDisable).collect(Collectors.toList());
+        actions = actions.stream().filter(ProductActionType::isDisableEnable).collect(Collectors.toList());
 
         List<ProductItem> productsToDisableEnable = getValidProductsToDisableEnable(actions, summaries);
         if (!productsToDisableEnable.isEmpty()) {

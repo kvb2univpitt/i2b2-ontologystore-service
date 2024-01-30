@@ -86,7 +86,7 @@ public class OntologyStoreServiceApplicationTests {
         for (String ontology : ontologies) {
             ProductActionType ont = new ProductActionType();
             ont.setId(ontology);
-            ont.setDisable(true);
+            ont.setDisableEnable(true);
             actions.add(ont);
         }
 

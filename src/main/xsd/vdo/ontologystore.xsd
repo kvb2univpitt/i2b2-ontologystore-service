@@ -41,7 +41,7 @@
             <xs:element name="include_network_package" type="xs:boolean" default="false"/>
             <xs:element name="download" type="xs:boolean" default="false"/>
             <xs:element name="install" type="xs:boolean" default="false"/>
-            <xs:element name="disable" type="xs:boolean" default="false"/>
+            <xs:element name="disable_enable" type="xs:boolean" default="false"/>
         </xs:sequence>
     </xs:complexType>
 

@@ -21,6 +21,7 @@ package edu.pitt.dbmi.i2b2.ontologystore.service;
 import edu.pitt.dbmi.i2b2.ontologystore.datavo.vdo.ActionSummaryType;
 import edu.pitt.dbmi.i2b2.ontologystore.datavo.vdo.ProductActionType;
 import edu.pitt.dbmi.i2b2.ontologystore.model.ProductItem;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.LinkedList;
@@ -112,7 +113,8 @@ public class OntologyDownloadService extends AbstractOntologyService {
                                 for (String networkFile : networkFiles) {
                                     fileSysService.downloadFile(networkFile, networkDir);
                                 }
-                            } catch (Exception exception) {
+                            } catch (IOException exception) {
+                                LOGGER.error("", exception);
                             }
                         } else {
                             summaries.add(createActionSummary(productItem.getTitle(), ACTION_TYPE, false, false, "Unable to download adapter mapping files."));

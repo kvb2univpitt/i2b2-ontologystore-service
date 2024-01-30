@@ -70,7 +70,7 @@ public final class StringUtils {
         sb.append("\n    id=").append(type.getId());
         sb.append(",\n    download=").append(type.isDownload());
         sb.append(",\n    install=").append(type.isInstall());
-        sb.append(",\n    disable=").append(type.isDisable());
+        sb.append(",\n    disable=").append(type.isDisableEnable());
         sb.append("\n}");
 
         return sb.toString();
