@@ -83,7 +83,7 @@ public class OntologyFileService {
         productType.setVersion(productItem.getVersion());
         productType.setOwner(productItem.getOwner());
         productType.setType(productItem.getType());
-        productType.setIncludeNetworkPackage(productItem.isIncludeNetworkPackage());
+        productType.setIncludeNetworkPackage(hasNetworkFiles(productItem.getNetworkFiles()));
 
         TerminologiesType terminologies = new TerminologiesType();
         terminologies.getTerminology().addAll(Arrays.asList(productItem.getTerminologies()));
@@ -92,6 +92,10 @@ public class OntologyFileService {
         getStatus(productType, productItem);
 
         return productType;
+    }
+
+    private boolean hasNetworkFiles(String[] networkFiles) {
+        return !(networkFiles == null || networkFiles.length == 0);
     }
 
     private void getStatus(ProductType product, ProductItem productItem) {

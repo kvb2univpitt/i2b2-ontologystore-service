@@ -157,9 +157,9 @@ public class OntologyStoreServiceApplicationTests {
             //            "act_loinc_lab_v4",
             //            "act_med_alpha_v4",
             //            "act_med_va_v4",
-            "act_network_ontology_v4",
+            //            "act_network_ontology_v4",
             //            "act_sdoh_v4",
-            //            "act_visit_details_v4",
+            "act_visit_details_v4",
             "act_vital_signs_v4"
         };
 
@@ -168,6 +168,7 @@ public class OntologyStoreServiceApplicationTests {
             ProductActionType ont = new ProductActionType();
             ont.setId(ontology);
             ont.setDownload(true);
+            ont.setIncludeNetworkPackage(true);
             actions.add(ont);
         }
 

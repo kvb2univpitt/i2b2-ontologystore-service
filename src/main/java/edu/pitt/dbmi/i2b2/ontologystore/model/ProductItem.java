@@ -42,7 +42,7 @@ public class ProductItem implements Serializable {
 
     private String type;
 
-    private boolean includeNetworkPackage;
+    private String[] networkFiles;
 
     private String[] terminologies;
 
@@ -93,12 +93,12 @@ public class ProductItem implements Serializable {
         this.type = type;
     }
 
-    public boolean isIncludeNetworkPackage() {
-        return includeNetworkPackage;
+    public String[] getNetworkFiles() {
+        return networkFiles;
     }
 
-    public void setIncludeNetworkPackage(boolean includeNetworkPackage) {
-        this.includeNetworkPackage = includeNetworkPackage;
+    public void setNetworkFiles(String[] networkFiles) {
+        this.networkFiles = networkFiles;
     }
 
     public String[] getTerminologies() {
